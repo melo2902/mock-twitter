@@ -9,6 +9,7 @@
 #import "TimelineViewController.h"
 #import "ComposeViewController.h"
 #import "DetailsViewController.h"
+#import "DateTools.h"
 #import "APIManager.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
@@ -91,7 +92,13 @@
     
     cell.username.text = tweet.user.screenName;
 //    cell.username.text = [NSString stringWithFormat:@"@\%f": tweet.user.screenName];
-    cell.date.text = tweet.createdAtString;
+
+    NSString *dateString = tweet.createdAtString;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"M/dd/yy"];
+    NSDate *dateFromString = [dateFormatter dateFromString:dateString];
+    
+    cell.date.text = dateFromString.shortTimeAgoSinceNow;
     cell.tweetText.text = tweet.text;
     cell.name.text = tweet.user.name;
     
