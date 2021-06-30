@@ -47,7 +47,7 @@
 //                NSLog(@"%@", text);
 //            }
             
-            self.arrayOfTweets = tweets;
+            self.arrayOfTweets = (NSMutableArray*)tweets;
             [self.tableView reloadData];
 //
         } else {
@@ -82,16 +82,16 @@
     Tweet *tweet = self.arrayOfTweets[indexPath.row];
 
 //    Work on the profile picture later
-//    NSString *URLString = tweet.user.profilePicture;
-//    NSURL *url = [NSURL URLWithString:URLString];
-//    NSData *urlData = [NSData dataWithContentsOfURL:url];
-//
-//    NSLog(@"%@", urlData);
+    NSString *URLString = tweet.user.profilePicture;
+    NSURL *url = [NSURL URLWithString:URLString];
+    NSData *urlData = [NSData dataWithContentsOfURL:url];
+
+    NSLog(@"%@", urlData);
     
-//    cell.profileView.image = tweet.user.profilePicture;
+    cell.profileView.image = [UIImage imageWithData:urlData];
     
     cell.username.text = tweet.user.screenName;
-//    cell.username.text = [NSString stringWithFormat:@"@\%f": tweet.user.screenName];
+//    cell.username.text = [NSString stringWithFormat:@"%@": tweet.user.screenName];
 
     NSString *dateString = tweet.createdAtString;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -102,9 +102,15 @@
     cell.tweetText.text = tweet.text;
     cell.name.text = tweet.user.name;
     
-//    cell.likeNumber.text = tweet.favoriteCount;
-//    cell.retweetNumber.text = tweet.retweetCount;
-   
+    NSString *favoriteCountNumber = [NSString stringWithFormat:@"%d", tweet.favoriteCount];
+    [cell.likeNumber setTitle:favoriteCountNumber forState:UIControlStateNormal];
+    
+    NSString *retweetCountNumber = [NSString stringWithFormat:@"%d", tweet.retweetCount];
+    [cell.retweetNumber setTitle:retweetCountNumber forState:UIControlStateNormal];
+    
+    NSString *replyCountNumber = [NSString stringWithFormat:@"%d", tweet.replyCount];
+    [cell.replyNumber setTitle:replyCountNumber forState:UIControlStateNormal];
+    
     return cell;
 }
 

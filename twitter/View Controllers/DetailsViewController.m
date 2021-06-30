@@ -15,6 +15,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *tweetLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *retweetNumber;
+@property (weak, nonatomic) IBOutlet UILabel *likeNumber;
 @end
 
 @implementation DetailsViewController
@@ -26,6 +28,8 @@
     self.nameLabel.text = self.tweet.user.name;
     self.tweetLabel.text = self.tweet.text;
     self.dateLabel.text = self.tweet.createdAtString;
+//    self.retweetNumber.text = self.tweet.retweetCount;
+//    self.likeNumber.text = self.tweet.likeNumber;
     // Do any additional setup after loading the view.
 }
 

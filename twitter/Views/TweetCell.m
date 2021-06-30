@@ -25,21 +25,21 @@
 
 - (IBAction)didTapeFavorite:(id)sender {
     // TODO: Update the local tweet model
-//    self.tweet.favorited = YES;
-//    self.tweet.favoriteCount += 1;
+    self.tweet.favorited = YES;
+    self.tweet.favoriteCount += 1;
 
-//    // TODO: Update cell UI
-////    refreshData()
-//
-//    // TODO: Send a POST request to the POST favorites/create endpoint
-//    [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
-//        if(error){
-//             NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
-//        }
-//        else{
-//            NSLog(@"Successfully favorited the following Tweet: %@", tweet.text);
-//        }
-//    }];
+    // TODO: Update cell UI
+//    refreshData()
+
+    // TODO: Send a POST request to the POST favorites/create endpoint
+    [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
+        if(error){
+             NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
+        }
+        else{
+            NSLog(@"Successfully favorited the following Tweet: %@", tweet.text);
+        }
+    }];
     
 }
 
