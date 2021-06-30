@@ -8,6 +8,7 @@
 
 #import "ComposeViewController.h"
 #import "APIManager.h"
+#import <UITextView+Placeholder/UITextView+Placeholder.h>
 
 @interface ComposeViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *profileView;
@@ -25,6 +26,9 @@
 
     self.profileView.image = [UIImage imageWithData:urlData];
     
+    UITextView *textView = [[UITextView alloc] init];
+    textView.placeholder = @"What are your thoughts?";
+//    textView.placeholderColor = [UIColor lightGrayColor]; // optional
 }
 - (IBAction)closeCompose:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];

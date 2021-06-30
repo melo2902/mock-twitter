@@ -63,14 +63,12 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)logout:(id)sender {
-//    Investigate later if this works
+- (IBAction)logoutApp:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     appDelegate.window.rootViewController = loginViewController;
-    [[APIManager shared] logout];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -90,7 +88,6 @@
     cell.profileView.image = [UIImage imageWithData:urlData];
     
     cell.username.text = [NSString stringWithFormat:@"@%@", tweet.user.screenName];
-//    cell.username.text = [NSString stringWithFormat:@"%@": tweet.user.screenName];
 
     NSDate *dateString = tweet.wholeCreationString;
     

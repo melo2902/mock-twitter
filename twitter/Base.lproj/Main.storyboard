@@ -213,6 +213,9 @@
                                 <rect key="frame" x="16" y="7" width="86" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Logout"/>
+                                <connections>
+                                    <action selector="logoutApp:" destination="Lbl-k5-U4i" eventType="touchUpInside" id="ofc-gk-16L"/>
+                                </connections>
                             </button>
                             <connections>
                                 <action selector="logout:" destination="Lbl-k5-U4i" id="LmR-fU-kpu"/>
@@ -378,7 +381,7 @@
                                 <rect key="frame" x="16" y="80" width="93" height="85"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Compose twitter" translatesAutoresizingMaskIntoConstraints="NO" id="ZAm-xg-z9U">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="ZAm-xg-z9U">
                                 <rect key="frame" x="117" y="80" width="257" height="260"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>

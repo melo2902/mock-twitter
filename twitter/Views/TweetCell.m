@@ -25,28 +25,14 @@
 }
 
 - (IBAction)didTapeFavorite:(id)sender {
-//    combine thiis into one for unfavorite
-    // TODO: Update the local tweet model
-//    self.tweet.favorited = YES;
-//    self.tweet.favoriteCount += 1;
+    self.tweet.favorited = YES;
+    self.tweet.favoriteCount += 1;
+    self.likeNumber.selected = YES;
 
-    // TODO: Update cell UI
-    if ([sender isSelected]) {
-        self.tweet.favorited = YES;
-        self.tweet.favoriteCount += 1;
-
-        [sender setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateNormal];
-//        [sender setSelected:NO];
-        NSLog(@"do we hit here");
-    } else {
-        self.tweet.favorited = NO;
-        self.tweet.favoriteCount -= 1;
-
-        [sender setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected];
-//        [sender setSelected:YES];
-    }
+    [sender setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected];
     
-//    refreshData()
+    NSString* likeCount = [NSString stringWithFormat:@"%d", self.tweet.favoriteCount];
+    [self.likeNumber setTitle:likeCount forState:UIControlStateNormal];
 
 //    have to check post request... need to change the url
     // TODO: Send a POST request to the POST favorites/create endpoint
@@ -64,15 +50,9 @@
 - (IBAction)didTapRetweet:(id)sender {
     self.tweet.retweeted = YES;
     self.tweet.retweetCount += 1;
+    self.replyNumber.selected = YES;
     
-    if ([sender isSelected]) {
-        [sender setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateNormal];
-//        [sender setSelected:NO];
-    } else {
-        [sender setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected];
-        NSLog(@"do we hit here");
-//        [sender setSelected:YES];
-    }
+    [sender setImage:[UIImage imageNamed:@"retweet-icon-green.png"] forState:UIControlStateSelected];
     
     [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
         if(error){
