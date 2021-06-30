@@ -37,15 +37,24 @@
              NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
         }
         else{
-            NSLog(@"Successfully favorited the following Tweet: %@", tweet.text);
+            NSLog(@"Successfully favorited the following Tweet: %@", self.tweet.text);
         }
     }];
     
 }
 
 - (IBAction)didTapRetweet:(id)sender {
-//    self.tweet.retweetCount = YES;
-//    self.tweet.retweeted += 1;
+    self.tweet.retweeted = YES;
+    self.tweet.retweetCount += 1;
+    
+    [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
+        if(error){
+             NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
+        }
+        else{
+            NSLog(@"Successfully favorited the following Tweet: %@", self.tweet.text);
+        }
+    }];
 }
 
 @end

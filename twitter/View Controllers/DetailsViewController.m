@@ -28,6 +28,13 @@
     self.nameLabel.text = self.tweet.user.name;
     self.tweetLabel.text = self.tweet.text;
     self.dateLabel.text = self.tweet.createdAtString;
+    
+    NSString *URLString = self.tweet.user.profilePicture;
+    NSURL *url = [NSURL URLWithString:URLString];
+    NSData *urlData = [NSData dataWithContentsOfURL:url];
+
+    self.profileView.image = [UIImage imageWithData:urlData];
+    
 //    self.retweetNumber.text = self.tweet.retweetCount;
 //    self.likeNumber.text = self.tweet.likeNumber;
     // Do any additional setup after loading the view.

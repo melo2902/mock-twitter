@@ -80,14 +80,12 @@
     TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell" forIndexPath:indexPath];
     
     Tweet *tweet = self.arrayOfTweets[indexPath.row];
-
-//    Work on the profile picture later
+    cell.tweet = tweet;
+    
     NSString *URLString = tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
 
-    NSLog(@"%@", urlData);
-    
     cell.profileView.image = [UIImage imageWithData:urlData];
     
     cell.username.text = tweet.user.screenName;
@@ -133,6 +131,7 @@
         UINavigationController *navigationController = [segue destinationViewController];
         ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
         composeController.delegate = self;
+        
     } else if ([segue.identifier isEqual:@"showDetailsSegue"]) {
         UITableViewCell *tappedCell = sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell];
