@@ -30,6 +30,7 @@
     self.dateLabel.text = self.tweet.createdAtString;
     self.retweetNumber.text = [NSString stringWithFormat:@"%d Retweets", self.tweet.retweetCount];
     self.likeNumber.text = [NSString stringWithFormat:@"%d Likes", self.tweet.favoriteCount];
+    self.timeLabel.text = self.tweet.createdAtTimeString;
     
     NSString *URLString = self.tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];

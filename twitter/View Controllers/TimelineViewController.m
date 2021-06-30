@@ -92,12 +92,9 @@
     cell.username.text = [NSString stringWithFormat:@"@%@", tweet.user.screenName];
 //    cell.username.text = [NSString stringWithFormat:@"%@": tweet.user.screenName];
 
-    NSString *dateString = tweet.createdAtString;
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"M/dd/yy"];
-    NSDate *dateFromString = [dateFormatter dateFromString:dateString];
+    NSDate *dateString = tweet.wholeCreationString;
     
-    cell.date.text = dateFromString.shortTimeAgoSinceNow;
+    cell.date.text = dateString.shortTimeAgoSinceNow;
     cell.tweetText.text = tweet.text;
     cell.name.text = tweet.user.name;
     

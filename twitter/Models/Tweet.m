@@ -45,13 +45,21 @@
         formatter.dateFormat = @"E MMM d HH:mm:ss Z y";
         // Convert String to Date
         NSDate *date = [formatter dateFromString:createdAtOriginalString];
+        self.wholeCreationString = date;
         // Configure output format
         
-//        NSLog(@"%@", date);
+        NSLog(@"%@", date);
         formatter.dateStyle = NSDateFormatterShortStyle;
         formatter.timeStyle = NSDateFormatterNoStyle;
+//        NSLog(@"%lu", (unsigned long)formatter.timeStyle);
         // Convert Date to String
         self.createdAtString = [formatter stringFromDate:date];
+       
+        NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
+        timeFormatter.dateFormat = @"HH:mm:ss";
+
+        NSString *timeString = [timeFormatter stringFromDate: date];
+        self.createdAtTimeString = timeString;
     }
     return self;
 }
