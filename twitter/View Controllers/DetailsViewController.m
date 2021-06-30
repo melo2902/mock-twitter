@@ -35,20 +35,11 @@
     NSString *URLString = self.tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
-
     UIImage *originalImage = [UIImage imageWithData:urlData];
-    UIImageView *originalImageView = [[UIImageView alloc] initWithImage:originalImage];
-    originalImageView.layer.cornerRadius = originalImage.size.width / 2;
-    originalImageView.layer.masksToBounds = YES;
-    originalImageView.layer.borderWidth = 0;
+    self.profileView.image = originalImage;
+    self.profileView.layer.cornerRadius = self.profileView.frame.size.width / 2;
+    self.profileView.clipsToBounds = true;
     
-//    [self.profileView.image addSubview: originalImageView];
-    
-//    Does not work
-    self.profileView.image = originalImageView.image;
-    
-//    self.retweetNumber.text = self.tweet.retweetCount;
-//    self.likeNumber.text = self.tweet.likeNumber;
     // Do any additional setup after loading the view.
 }
 

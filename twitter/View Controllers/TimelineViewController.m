@@ -13,6 +13,7 @@
 #import "APIManager.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
+#import "InfiniteScrollActivityView.h"
 #import "TweetCell.h"
 #import "Tweet.h"
 
@@ -20,10 +21,11 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
-@property (assign, nonatomic) BOOL isMoreDataLoading;
 @end
 
 @implementation TimelineViewController
+BOOL isMoreDataLoading;
+InfiniteScrollActivityView *loadingMoreView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -36,6 +38,16 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(getTimeline) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
+    
+    // Set up Infinite Scroll loading indicator
+    CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
+    loadingMoreView = [[InfiniteScrollActivityView alloc] initWithFrame:frame];
+    loadingMoreView.hidden = true;
+    [self.tableView addSubview:loadingMoreView];
+    
+    UIEdgeInsets insets = self.tableView.contentInset;
+    insets.bottom += InfiniteScrollActivityView.defaultHeight;
+    self.tableView.contentInset = insets;
 }
 
 - (void)getTimeline {
@@ -85,7 +97,10 @@
     NSURL *url = [NSURL URLWithString:URLString];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
 
-    cell.profileView.image = [UIImage imageWithData:urlData];
+    UIImage *originalImage = [UIImage imageWithData:urlData];
+    cell.profileView.image = originalImage;
+    cell.profileView.layer.cornerRadius = cell.profileView.frame.size.width / 2;
+    cell.profileView.clipsToBounds = true;
     
     cell.username.text = [NSString stringWithFormat:@"@%@", tweet.user.screenName];
 
@@ -112,49 +127,58 @@
     [self.tableView reloadData];
 }
 
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-//    if(indexPath.row + 1 == [self.arrayOfTweets count]){
-//        [self loadMoreData:[self.arrayOfTweets count] + 20];
-//    }
-//}
-//
 //-(void)loadMoreData{
-//    
+//
 //      // ... Create the NSURLRequest (myRequest) ...
-//    
+//
 //    // Configure session so that completion handler is executed on main UI thread
 //    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    
+//
 //    NSURLSession *session  = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-//   
+//
 //    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *requestError) {
 //        if (requestError != nil) {
-//            
+//
 //        }
 //        else
 //        {
 //            // Update flag
-//            self.isMoreDataLoading = false;
-//            
+//            isMoreDataLoading = false;
+//
+//            // Stop the loading indicator
+//            [loadingMoreView stopAnimating];
+//
 //            // ... Use the new data to update the data source ...
-//            
+//
 //            // Reload the tableView now that there is new data
 //            [self.tableView reloadData];
 //        }
 //    }];
 //    [task resume];
 //}
-//
-//
+
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+//    if(indexPath.row + 1 == [self.arrayOfTweets count]){
+//        [self loadMoreData:[self.arrayOfTweets count] + 20];
+//    }
+//}
+
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//    if(!self.isMoreDataLoading){
+//    if(!isMoreDataLoading){
 //        // Calculate the position of one screen length before the bottom of the results
 //        int scrollViewContentHeight = self.tableView.contentSize.height;
 //        int scrollOffsetThreshold = scrollViewContentHeight - self.tableView.bounds.size.height;
-//        
+//
 //        // When the user has scrolled past the threshold, start requesting
 //        if(scrollView.contentOffset.y > scrollOffsetThreshold && self.tableView.isDragging) {
 //            isMoreDataLoading = true;
+//
+//            // Update position of loadingMoreView, and start loading indicator
+//            CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
+//            loadingMoreView.frame = frame;
+//            [loadingMoreView startAnimating];
+//
+//            // Code to load more results
 //            [self loadMoreData];
 //        }
 //    }

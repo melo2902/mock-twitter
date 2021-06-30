@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface TimelineViewController : UIViewController
--(void)loadMoreData;
+
 @end

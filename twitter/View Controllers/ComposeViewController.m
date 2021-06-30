@@ -25,7 +25,7 @@
     NSData *urlData = [NSData dataWithContentsOfURL:url];
 
     self.profileView.image = [UIImage imageWithData:urlData];
-    
+//
     UITextView *textView = [[UITextView alloc] init];
     textView.placeholder = @"What are your thoughts?";
 //    textView.placeholderColor = [UIColor lightGrayColor]; // optional
