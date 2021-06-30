@@ -10,6 +10,7 @@
 #import "APIManager.h"
 
 @interface ComposeViewController ()
+@property (weak, nonatomic) IBOutlet UIImageView *profileView;
 
 @end
 
@@ -18,6 +19,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    NSString *URLString = self.user.profilePicture;
+    NSURL *url = [NSURL URLWithString:URLString];
+    NSData *urlData = [NSData dataWithContentsOfURL:url];
+
+    self.profileView.image = [UIImage imageWithData:urlData];
+    
 }
 - (IBAction)closeCompose:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];

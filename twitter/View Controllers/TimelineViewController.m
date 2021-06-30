@@ -16,10 +16,11 @@
 #import "TweetCell.h"
 #import "Tweet.h"
 
-@interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (assign, nonatomic) BOOL isMoreDataLoading;
 @end
 
 @implementation TimelineViewController
@@ -88,7 +89,7 @@
 
     cell.profileView.image = [UIImage imageWithData:urlData];
     
-    cell.username.text = tweet.user.screenName;
+    cell.username.text = [NSString stringWithFormat:@"@%@", tweet.user.screenName];
 //    cell.username.text = [NSString stringWithFormat:@"%@": tweet.user.screenName];
 
     NSString *dateString = tweet.createdAtString;
@@ -117,6 +118,54 @@
     [self.tableView reloadData];
 }
 
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+//    if(indexPath.row + 1 == [self.arrayOfTweets count]){
+//        [self loadMoreData:[self.arrayOfTweets count] + 20];
+//    }
+//}
+//
+//-(void)loadMoreData{
+//    
+//      // ... Create the NSURLRequest (myRequest) ...
+//    
+//    // Configure session so that completion handler is executed on main UI thread
+//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+//    
+//    NSURLSession *session  = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+//   
+//    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *requestError) {
+//        if (requestError != nil) {
+//            
+//        }
+//        else
+//        {
+//            // Update flag
+//            self.isMoreDataLoading = false;
+//            
+//            // ... Use the new data to update the data source ...
+//            
+//            // Reload the tableView now that there is new data
+//            [self.tableView reloadData];
+//        }
+//    }];
+//    [task resume];
+//}
+//
+//
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    if(!self.isMoreDataLoading){
+//        // Calculate the position of one screen length before the bottom of the results
+//        int scrollViewContentHeight = self.tableView.contentSize.height;
+//        int scrollOffsetThreshold = scrollViewContentHeight - self.tableView.bounds.size.height;
+//        
+//        // When the user has scrolled past the threshold, start requesting
+//        if(scrollView.contentOffset.y > scrollOffsetThreshold && self.tableView.isDragging) {
+//            isMoreDataLoading = true;
+//            [self loadMoreData];
+//        }
+//    }
+//}
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -124,13 +173,10 @@
 //     Get the new view controller using [segue destinationViewController].
 //     Pass the selected object to the new view controller.
     if ([segue.identifier isEqual:@"composeTweetSegue"]) {
-//        UITableViewCell *tappedCell = sender;
-//        NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell];
-//        Tweet *tweet = self.arrayOfTweets[indexPath.row];
-//
         UINavigationController *navigationController = [segue destinationViewController];
         ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
         composeController.delegate = self;
+//        composeController.user = self.
         
     } else if ([segue.identifier isEqual:@"showDetailsSegue"]) {
         UITableViewCell *tappedCell = sender;
