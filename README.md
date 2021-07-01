@@ -54,11 +54,13 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented user stories:
+Here's a walkthrough of implemented user stories: https://i.imgur.com/uhrKiua.gif
 1. Twitter features
+
 ![](https://i.imgur.com/uhrKiua.gif)
 
-2. Shows the different orientations possible due to auto layout:
+2. Shows the different orientations possible due to auto layout: https://i.imgur.com/56khOY4.gif
+
 ![](https://i.imgur.com/56khOY4.gif)
 
 GIF created with [Kap](https://getkap.co/).
