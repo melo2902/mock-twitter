@@ -50,44 +50,44 @@
                         callbackURL:callbackURL
                               scope:nil
                             success:^(BDBOAuth1Credential *requestToken) {
-                                
-                                // Authenticate
-                                NSString *fullAuthPath = [self.baseURL.absoluteString stringByAppendingFormat:@"/%@", authenticationPath];
-                                fullAuthPath = [fullAuthPath stringByAppendingString:requestToken.token];
-                                NSURL *authURL = [NSURL URLWithString:fullAuthPath];
-                                self.authenticationSession = [[SFAuthenticationSession alloc] initWithURL:authURL callbackURLScheme:callbackScheme completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
-                                    
-                                    // Error handling
-                                    if (! callbackURL || error || [callbackURL.absoluteString containsString:@"?denied="]) {
-                                        if (completion) { completion(false, error); }
-                                        return;
-                                    }
-                                    
-                                    // Get authenticated request token from url query
-                                    BDBOAuth1Credential * authenticatedRequestToken = [BDBOAuth1Credential credentialWithQueryString:callbackURL.query];
-                                    
-                                    // Get access token
-                                    [self fetchAccessTokenWithPath:accessTokenPath
-                                                            method:accessTokenMethod
-                                                      requestToken:authenticatedRequestToken
-                                                           success:^(BDBOAuth1Credential *accessToken) {
-                                                               
-                                                               // Store access token
-                                                               [self.requestSerializer saveAccessToken:accessToken];
-                                                               
-                                                               // Call success
-                                                               if (completion) { completion(true, error); }
-                                                               
-                                                           } failure:^(NSError *error) {
-                                                               if (completion) { completion(false, error); }
-                                                           }];
-                                    
-                                }];
-                                [self.authenticationSession start];
-                                
-                            } failure:^(NSError *error) {
-                                if (completion) { completion(false, error); }
-                            }];
+        
+        // Authenticate
+        NSString *fullAuthPath = [self.baseURL.absoluteString stringByAppendingFormat:@"/%@", authenticationPath];
+        fullAuthPath = [fullAuthPath stringByAppendingString:requestToken.token];
+        NSURL *authURL = [NSURL URLWithString:fullAuthPath];
+        self.authenticationSession = [[SFAuthenticationSession alloc] initWithURL:authURL callbackURLScheme:callbackScheme completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+            
+            // Error handling
+            if (! callbackURL || error || [callbackURL.absoluteString containsString:@"?denied="]) {
+                if (completion) { completion(false, error); }
+                return;
+            }
+            
+            // Get authenticated request token from url query
+            BDBOAuth1Credential * authenticatedRequestToken = [BDBOAuth1Credential credentialWithQueryString:callbackURL.query];
+            
+            // Get access token
+            [self fetchAccessTokenWithPath:accessTokenPath
+                                    method:accessTokenMethod
+                              requestToken:authenticatedRequestToken
+                                   success:^(BDBOAuth1Credential *accessToken) {
+                
+                // Store access token
+                [self.requestSerializer saveAccessToken:accessToken];
+                
+                // Call success
+                if (completion) { completion(true, error); }
+                
+            } failure:^(NSError *error) {
+                if (completion) { completion(false, error); }
+            }];
+            
+        }];
+        [self.authenticationSession start];
+        
+    } failure:^(NSError *error) {
+        if (completion) { completion(false, error); }
+    }];
 }
 
 - (BOOL)logout {

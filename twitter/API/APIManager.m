@@ -34,7 +34,7 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     
     NSString *path = [[NSBundle mainBundle] pathForResource: @"Keys" ofType: @"plist"];
     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
-         
+    
     NSString *key= [dict objectForKey: @"consumer_Key"];
     NSString *secret = [dict objectForKey: @"consumer_Secret"];
     
@@ -59,18 +59,16 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     
     // Create a GET Request
     [self GET:@"1.1/statuses/home_timeline.json"
-       parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSArray *  _Nullable tweetDictionaries) {
-           // Success
-           NSMutableArray *tweets  = [Tweet tweetsWithArray:tweetDictionaries];
-           completion(tweets, nil);
-       } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-           // There was a problem
-           completion(nil, error);
+   parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSArray *  _Nullable tweetDictionaries) {
+        // Success
+        NSMutableArray *tweets  = [Tweet tweetsWithArray:tweetDictionaries];
+        completion(tweets, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        // There was a problem
+        completion(nil, error);
     }];
 }
 
-// APIManager.m
-// TODO: Post Composed Tweet Method
 - (void)postStatusWithText:(NSString *)text completion:(void (^)(Tweet *, NSError *))completion{
     NSString *urlString = @"1.1/statuses/update.json";
     NSDictionary *parameters = @{@"status": text};
@@ -106,8 +104,9 @@ static NSString * const baseURLString = @"https://api.twitter.com";
 }
 
 - (void)retweet:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion{
-    NSString *urlString = @"1.1/retweet/create.json";
-    NSDictionary *parameters = @{@"id": tweet.idStr};
+    NSString *urlString =  [NSString stringWithFormat:@"1.1/statuses/retweet/%@.json",tweet.idStr];
+    NSDictionary *parameters = [[NSDictionary alloc] init];
+    
     [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);
@@ -116,10 +115,10 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     }];
 }
 
-//Untweet buttons is wrong
 - (void)untweet:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion{
-    NSString *urlString = @"1.1/statuses/unretweet/";
-    NSDictionary *parameters = @{@"id": tweet.idStr};
+    NSString *urlString =  [NSString stringWithFormat:@"1.1/statuses/unretweet/%@.json",tweet.idStr];
+    NSDictionary *parameters = [[NSDictionary alloc] init];
+    
     [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);

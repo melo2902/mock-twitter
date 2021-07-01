@@ -14,13 +14,13 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
     self = [super init];
     if (self) {
-
+        
         // Is this a re-tweet?
         NSDictionary *originalTweet = dictionary[@"retweeted_status"];
         if(originalTweet != nil){
             NSDictionary *userDictionary = dictionary[@"user"];
             self.retweetedByUser = [[User alloc] initWithDictionary:userDictionary];
-
+            
             // Change tweet to original tweet
             dictionary = originalTweet;
         }
@@ -36,10 +36,10 @@
         // initialize user
         NSDictionary *user = dictionary[@"user"];
         self.user = [[User alloc] initWithDictionary:user];
-
+        
         // Format createdAt date string
         NSString *createdAtOriginalString = dictionary[@"created_at"];
-//        NSLog(@"%@", createdAtOriginalString);
+        //        NSLog(@"%@", createdAtOriginalString);
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         // Configure the input format to parse the date string
         formatter.dateFormat = @"E MMM d HH:mm:ss Z y";
@@ -51,13 +51,13 @@
         NSLog(@"%@", date);
         formatter.dateStyle = NSDateFormatterShortStyle;
         formatter.timeStyle = NSDateFormatterNoStyle;
-//        NSLog(@"%lu", (unsigned long)formatter.timeStyle);
+        //        NSLog(@"%lu", (unsigned long)formatter.timeStyle);
         // Convert Date to String
         self.createdAtString = [formatter stringFromDate:date];
-       
+        
         NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
         timeFormatter.dateFormat = @"HH:mm:ss";
-
+        
         NSString *timeString = [timeFormatter stringFromDate: date];
         self.createdAtTimeString = timeString;
     }

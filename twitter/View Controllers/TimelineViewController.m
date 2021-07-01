@@ -30,7 +30,8 @@ InfiniteScrollActivityView *loadingMoreView;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    [self reloadRowsAtIndexPaths];
+
+    [self.tableView reloadData];
 }
 
 - (void)viewDidLoad {
@@ -46,14 +47,14 @@ InfiniteScrollActivityView *loadingMoreView;
     [self.tableView insertSubview:self.refreshControl atIndex:0];
     
     // Set up Infinite Scroll loading indicator
-//    CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
-//    loadingMoreView = [[InfiniteScrollActivityView alloc] initWithFrame:frame];
-//    loadingMoreView.hidden = true;
-//    [self.tableView addSubview:loadingMoreView];
-//
-//    UIEdgeInsets insets = self.tableView.contentInset;
-//    insets.bottom += InfiniteScrollActivityView.defaultHeight;
-//    self.tableView.contentInset = insets;
+    //    CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
+    //    loadingMoreView = [[InfiniteScrollActivityView alloc] initWithFrame:frame];
+    //    loadingMoreView.hidden = true;
+    //    [self.tableView addSubview:loadingMoreView];
+    //
+    //    UIEdgeInsets insets = self.tableView.contentInset;
+    //    insets.bottom += InfiniteScrollActivityView.defaultHeight;
+    //    self.tableView.contentInset = insets;
 }
 
 - (void)getTimeline {
@@ -64,7 +65,7 @@ InfiniteScrollActivityView *loadingMoreView;
             
             self.arrayOfTweets = (NSMutableArray*)tweets;
             [self.tableView reloadData];
-//
+            //
         } else {
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
         }
@@ -79,7 +80,7 @@ InfiniteScrollActivityView *loadingMoreView;
 
 - (IBAction)logoutApp:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     appDelegate.window.rootViewController = loginViewController;
@@ -98,14 +99,14 @@ InfiniteScrollActivityView *loadingMoreView;
     NSString *URLString = tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
-
+    
     UIImage *originalImage = [UIImage imageWithData:urlData];
     cell.profileView.image = originalImage;
     cell.profileView.layer.cornerRadius = cell.profileView.frame.size.width / 2;
     cell.profileView.clipsToBounds = true;
     
     cell.username.text = [NSString stringWithFormat:@"@%@", tweet.user.screenName];
-
+    
     NSDate *dateString = tweet.wholeCreationString;
     
     cell.date.text = dateString.shortTimeAgoSinceNow;
@@ -121,8 +122,6 @@ InfiniteScrollActivityView *loadingMoreView;
     NSString *replyCountNumber = [NSString stringWithFormat:@"%d", tweet.replyCount];
     [cell.replyNumber setTitle:replyCountNumber forState:UIControlStateNormal];
     
-//    [cell.likeNumber setSelected:cell.tweet.favorited];
-    
     return cell;
 }
 
@@ -132,14 +131,16 @@ InfiniteScrollActivityView *loadingMoreView;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
- // Do some stuff when the row is selected
- [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    // Do some stuff when the row is selected
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation {
-
+- (void)tableView:(UITableView *)tableView willDisplayCell:(TweetCell *)cell
+                                         forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Update the state of the like and retweet buttons to denote if the user has liked or retweeted it
+    [cell.likeNumber setSelected:cell.tweet.favorited];
+    [cell.retweetNumber setSelected:cell.tweet.retweeted];
 }
-//reloadRows
 
 //-(void)loadMoreData{
 //
@@ -202,13 +203,13 @@ InfiniteScrollActivityView *loadingMoreView;
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-//     Get the new view controller using [segue destinationViewController].
-//     Pass the selected object to the new view controller.
+    //     Get the new view controller using [segue destinationViewController].
+    //     Pass the selected object to the new view controller.
     if ([segue.identifier isEqual:@"composeTweetSegue"]) {
         UINavigationController *navigationController = [segue destinationViewController];
         ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
         composeController.delegate = self;
-//        composeController.user = self.
+        //        composeController.user = self.
         
     } else if ([segue.identifier isEqual:@"showDetailsSegue"]) {
         UITableViewCell *tappedCell = sender;
