@@ -27,7 +27,6 @@
 
 @implementation DetailsViewController
 
-//Need to set it at the beginning
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -60,8 +59,6 @@
         [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                 NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
-                //                unset if fails
-                //                Set an alert
             }
             else{
                 NSLog(@"Successfully favorited the following Tweet: %@", self.tweet.text);
@@ -115,16 +112,6 @@
         }];
     }
     self.retweetNumber.text = [NSString stringWithFormat:@"%d Retweets", self.tweet.retweetCount];
-}
-
-
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
 }
 
 @end

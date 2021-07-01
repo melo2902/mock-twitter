@@ -13,7 +13,6 @@
 #import "APIManager.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
-#import "InfiniteScrollActivityView.h"
 #import "TweetCell.h"
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
@@ -28,12 +27,10 @@
 @end
 
 @implementation TimelineViewController
-BOOL isMoreDataLoading;
-InfiniteScrollActivityView *loadingMoreView;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
+    
     [self.tableView reloadData];
 }
 
@@ -45,8 +42,6 @@ InfiniteScrollActivityView *loadingMoreView;
     
     [self getTimeline];
     [self getLoggedInUser];
-        
-//    Make a call to the API and create user object
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(getTimeline) forControlEvents:UIControlEventValueChanged];
@@ -60,40 +55,25 @@ InfiniteScrollActivityView *loadingMoreView;
             
             self.loggedInUser = user;
             self.profilePictureLink = user.profilePicture;
-            NSLog(@"userPP%@", self.loggedInUser.profilePicture);
-            //
+            
         } else {
-            NSLog(@"😫😫😫 Error getting user: %@", error.localizedDescription);
+            NSLog(@"Error getting user: %@", error.localizedDescription);
         }
     }];
 }
 
 - (void)getTimeline {
-    // Get timeline
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
         if (tweets) {
             NSLog(@"😎😎😎 Successfully loaded home timeline");
             
             self.arrayOfTweets = (NSMutableArray*)tweets;
             [self.tableView reloadData];
-            //
+            
         } else {
-            NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
+            NSLog(@"Error getting home timeline: %@", error.localizedDescription);
         }
     }];
-    
-//    [[APIManager shared] getUSERID:^(User *user, NSError *error) {
-//        if (user) {
-//            NSLog(@"😎😎😎 Successfully got userid");
-//
-//            self.loggedInUser = user;
-//
-//            NSLog(@"userPP%@", self.loggedInUser.profilePicture);
-//            //
-//        } else {
-//            NSLog(@"😫😫😫 Error getting user: %@", error.localizedDescription);
-//        }
-//    }];
     
     [self.refreshControl endRefreshing];
 }
@@ -131,12 +111,11 @@ InfiniteScrollActivityView *loadingMoreView;
     cell.profileView.clipsToBounds = true;
     
     cell.username.text = [NSString stringWithFormat:@"@%@", tweet.user.screenName];
-    
-    NSDate *dateString = tweet.wholeCreationString;
-    
-    cell.date.text = dateString.shortTimeAgoSinceNow;
     cell.tweetText.text = tweet.text;
     cell.name.text = tweet.user.name;
+    
+    NSDate *dateString = tweet.wholeCreationString;
+    cell.date.text = dateString.shortTimeAgoSinceNow;
     
     NSString *favoriteCountNumber = [NSString stringWithFormat:@"%d", tweet.favoriteCount];
     [cell.likeNumber setTitle:favoriteCountNumber forState:UIControlStateNormal];
@@ -149,8 +128,7 @@ InfiniteScrollActivityView *loadingMoreView;
     
     if (tweet.mediaLink[0][@"media_url_https"]){
         NSURL *imageURL = [NSURL URLWithString:cell.tweet.mediaLink[0][@"media_url_https"]];
-        NSData *mediaData = [NSData dataWithContentsOfURL:imageURL];
-        cell.mediaView.image = [UIImage imageWithData:mediaData];
+        [cell.mediaView setImageWithURL:imageURL];
     } else {
         cell.mediaView.image = nil;
     }
@@ -164,12 +142,12 @@ InfiniteScrollActivityView *loadingMoreView;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Do some stuff when the row is selected
+    // Deselect the row
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(TweetCell *)cell
-                                         forRowAtIndexPath:(NSIndexPath *)indexPath {
+forRowAtIndexPath:(NSIndexPath *)indexPath {
     // Update the state of the like and retweet buttons to denote if the user has liked or retweeted it
     [cell.likeNumber setSelected:cell.tweet.favorited];
     [cell.retweetNumber setSelected:cell.tweet.retweeted];
@@ -185,8 +163,7 @@ InfiniteScrollActivityView *loadingMoreView;
         UINavigationController *navigationController = [segue destinationViewController];
         ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
         composeController.delegate = self;
-        composeController.user = self.loggedInUser;
-        composeController.userPP = self.profilePictureLink;
+        composeController.userPFP = self.profilePictureLink;
         
     } else if ([segue.identifier isEqual:@"showDetailsSegue"]) {
         UITableViewCell *tappedCell = sender;
@@ -195,7 +172,6 @@ InfiniteScrollActivityView *loadingMoreView;
         
         DetailsViewController *detailsViewController = [segue destinationViewController];
         detailsViewController.tweet = tweet;
-        detailsViewController.indexPath = indexPath;
     }
 }
 

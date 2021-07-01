@@ -2,7 +2,7 @@
 
 **Mock-twitter** is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
-Time spent: **X** hours spent in total
+Time spent: **22** hours spent in total
 
 ## User Stories
 
@@ -35,19 +35,22 @@ The following **optional** features are implemented:
 - [ ] When composing, you should have a countdown for the number of characters remaining for the tweet (out of 280) (**1 point**)
 - [ ] After creating a new tweet, a user should be able to view it in the timeline immediately without refetching the timeline from the network.
 - [ ] User can reply to any tweet, and replies should be prefixed with the username and the reply_id should be set when posting the tweet (**2 points**)
-- [ ] User sees embedded images in tweet if available
+- [x] User sees embedded images in tweet if available
 - [ ] User can switch between timeline, mentions, or profile view through a tab bar (**3 points**)
 - [ ] Profile Page: pulling down the profile page should blur and resize the header image. (**4 points**)
 
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [x] Updated the UI (incl. adding circular profile pictures, placing the user's profile picture in the compose view controller, adding the detailed posting dates in the details page)
+- [x] Creating a new GET API to grab the credentials of the logged in user.
+- [x] Added a placeholder for UI TextView
+- [x] Deselect the row once the user moves on
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. I want to better understand the time lag between loading images using different methods (i.e. using imageWithData vs imageWithURL). Also, the reason why saving the profile picture link works when saving the user doesn't even though the profile picture link comes from the user. 
+2. I'd love to explore more regarding the profiles of each user. I was able to create a GET request to grab the logged in user's credential but I ran out of time to explore further. 
 
 ## Video Walkthrough
 

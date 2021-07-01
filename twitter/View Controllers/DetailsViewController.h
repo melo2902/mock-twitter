@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DetailsViewController : UIViewController
 @property (nonatomic, strong) Tweet *tweet;
-@property (nonatomic, strong) NSIndexPath *indexPath;
 @end
 
 NS_ASSUME_NONNULL_END

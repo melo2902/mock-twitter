@@ -46,7 +46,6 @@
         
         // Format createdAt date string
         NSString *createdAtOriginalString = dictionary[@"created_at"];
-        //        NSLog(@"%@", createdAtOriginalString);
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         // Configure the input format to parse the date string
         formatter.dateFormat = @"E MMM d HH:mm:ss Z y";
@@ -55,11 +54,8 @@
         self.wholeCreationString = date;
         // Configure output format
         
-        NSLog(@"%@", date);
         formatter.dateStyle = NSDateFormatterShortStyle;
         formatter.timeStyle = NSDateFormatterNoStyle;
-        //        NSLog(@"%lu", (unsigned long)formatter.timeStyle);
-        // Convert Date to String
         self.createdAtString = [formatter stringFromDate:date];
         
         NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
