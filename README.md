@@ -45,7 +45,7 @@ The following **additional** features are implemented:
 - [x] Updated the UI (incl. adding circular profile pictures, placing the user's profile picture in the compose view controller, adding the detailed posting dates in the details page)
 - [x] Creating a new GET API to grab the credentials of the logged in user.
 - [x] Added a placeholder for UI TextView
-- [x] Deselect the row once the user moves on
+- [x] Deselect the row once the user moves on to the next navigation page
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
@@ -55,8 +55,11 @@ Please list two areas of the assignment you'd like to **discuss further with you
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
+1. Twitter features
+![](https://i.imgur.com/uhrKiua.gif)
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+2. Shows the different orientations possible due to auto layout:
+![](https://i.imgur.com/56khOY4.gif)
 
 GIF created with [Kap](https://getkap.co/).
 
