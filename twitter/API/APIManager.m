@@ -8,6 +8,7 @@
 
 #import "APIManager.h"
 #import "Tweet.h"
+#import "User.h"
 
 static NSString * const baseURLString = @"https://api.twitter.com";
 
@@ -63,6 +64,22 @@ static NSString * const baseURLString = @"https://api.twitter.com";
         // Success
         NSMutableArray *tweets  = [Tweet tweetsWithArray:tweetDictionaries];
         completion(tweets, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        // There was a problem
+        completion(nil, error);
+    }];
+}
+
+//Get information about logged in user
+- (void)getUSERID:(void(^)(User *user, NSError *error))completion {
+    NSDictionary *parameters = [[NSDictionary alloc] init];
+    
+    // Create a GET Request
+    [self GET:@"1.1/account/verify_credentials.json"
+   parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable userInformationDictionary) {
+        // Success
+        User *user = [[User alloc] initWithDictionary:userInformationDictionary];
+        completion(user, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         // There was a problem
         completion(nil, error);

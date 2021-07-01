@@ -33,6 +33,13 @@
         self.replyCount = [dictionary[@"retweet_count"] intValue];
         self.replied = [dictionary[@"retweeted"] boolValue];
         
+        if ([dictionary[@"entities"] objectForKey:@"media"]) {
+            NSLog(@"gooddic%@", dictionary[@"entities"][@"media"]);
+            NSArray *media = dictionary[@"entities"][@"media"];
+            
+            self.mediaLink = media;
+        }
+        
         // initialize user
         NSDictionary *user = dictionary[@"user"];
         self.user = [[User alloc] initWithDictionary:user];

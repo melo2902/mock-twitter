@@ -16,12 +16,15 @@
 #import "InfiniteScrollActivityView.h"
 #import "TweetCell.h"
 #import "Tweet.h"
+#import "UIImageView+AFNetworking.h"
+#import "User.h"
 
 @interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
-
+@property (nonatomic, weak) User *loggedInUser;
+@property (nonatomic, strong) NSString *profilePictureLink;
 @end
 
 @implementation TimelineViewController
@@ -41,20 +44,28 @@ InfiniteScrollActivityView *loadingMoreView;
     self.tableView.delegate = self;
     
     [self getTimeline];
+    [self getLoggedInUser];
+        
+//    Make a call to the API and create user object
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(getTimeline) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
-    
-    // Set up Infinite Scroll loading indicator
-    //    CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
-    //    loadingMoreView = [[InfiniteScrollActivityView alloc] initWithFrame:frame];
-    //    loadingMoreView.hidden = true;
-    //    [self.tableView addSubview:loadingMoreView];
-    //
-    //    UIEdgeInsets insets = self.tableView.contentInset;
-    //    insets.bottom += InfiniteScrollActivityView.defaultHeight;
-    //    self.tableView.contentInset = insets;
+}
+
+- (void)getLoggedInUser {
+    [[APIManager shared] getUSERID:^(User *user, NSError *error) {
+        if (user) {
+            NSLog(@"😎😎😎 Successfully got userid");
+            
+            self.loggedInUser = user;
+            self.profilePictureLink = user.profilePicture;
+            NSLog(@"userPP%@", self.loggedInUser.profilePicture);
+            //
+        } else {
+            NSLog(@"😫😫😫 Error getting user: %@", error.localizedDescription);
+        }
+    }];
 }
 
 - (void)getTimeline {
@@ -70,6 +81,20 @@ InfiniteScrollActivityView *loadingMoreView;
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
         }
     }];
+    
+//    [[APIManager shared] getUSERID:^(User *user, NSError *error) {
+//        if (user) {
+//            NSLog(@"😎😎😎 Successfully got userid");
+//
+//            self.loggedInUser = user;
+//
+//            NSLog(@"userPP%@", self.loggedInUser.profilePicture);
+//            //
+//        } else {
+//            NSLog(@"😫😫😫 Error getting user: %@", error.localizedDescription);
+//        }
+//    }];
+    
     [self.refreshControl endRefreshing];
 }
 
@@ -122,6 +147,14 @@ InfiniteScrollActivityView *loadingMoreView;
     NSString *replyCountNumber = [NSString stringWithFormat:@"%d", tweet.replyCount];
     [cell.replyNumber setTitle:replyCountNumber forState:UIControlStateNormal];
     
+    if (tweet.mediaLink[0][@"media_url_https"]){
+        NSURL *imageURL = [NSURL URLWithString:cell.tweet.mediaLink[0][@"media_url_https"]];
+        NSData *mediaData = [NSData dataWithContentsOfURL:imageURL];
+        cell.mediaView.image = [UIImage imageWithData:mediaData];
+    } else {
+        cell.mediaView.image = nil;
+    }
+    
     return cell;
 }
 
@@ -142,63 +175,6 @@ InfiniteScrollActivityView *loadingMoreView;
     [cell.retweetNumber setSelected:cell.tweet.retweeted];
 }
 
-//-(void)loadMoreData{
-//
-//      // ... Create the NSURLRequest (myRequest) ...
-//
-//    // Configure session so that completion handler is executed on main UI thread
-//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//
-//    NSURLSession *session  = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-//
-//    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *requestError) {
-//        if (requestError != nil) {
-//
-//        }
-//        else
-//        {
-//            // Update flag
-//            isMoreDataLoading = false;
-//
-//            // Stop the loading indicator
-//            [loadingMoreView stopAnimating];
-//
-//            // ... Use the new data to update the data source ...
-//
-//            // Reload the tableView now that there is new data
-//            [self.tableView reloadData];
-//        }
-//    }];
-//    [task resume];
-//}
-
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-//    if(indexPath.row + 1 == [self.arrayOfTweets count]){
-//        [self loadMoreData:[self.arrayOfTweets count] + 20];
-//    }
-//}
-
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//    if(!isMoreDataLoading){
-//        // Calculate the position of one screen length before the bottom of the results
-//        int scrollViewContentHeight = self.tableView.contentSize.height;
-//        int scrollOffsetThreshold = scrollViewContentHeight - self.tableView.bounds.size.height;
-//
-//        // When the user has scrolled past the threshold, start requesting
-//        if(scrollView.contentOffset.y > scrollOffsetThreshold && self.tableView.isDragging) {
-//            isMoreDataLoading = true;
-//
-//            // Update position of loadingMoreView, and start loading indicator
-//            CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
-//            loadingMoreView.frame = frame;
-//            [loadingMoreView startAnimating];
-//
-//            // Code to load more results
-//            [self loadMoreData];
-//        }
-//    }
-//}
-
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -209,7 +185,8 @@ InfiniteScrollActivityView *loadingMoreView;
         UINavigationController *navigationController = [segue destinationViewController];
         ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
         composeController.delegate = self;
-        //        composeController.user = self.
+        composeController.user = self.loggedInUser;
+        composeController.userPP = self.profilePictureLink;
         
     } else if ([segue.identifier isEqual:@"showDetailsSegue"]) {
         UITableViewCell *tappedCell = sender;

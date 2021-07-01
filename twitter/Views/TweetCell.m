@@ -19,6 +19,9 @@
     
     [self.likeNumber setSelected:self.tweet.favorited];
     [self.retweetNumber setSelected:self.tweet.retweeted];
+    
+//    NSURL *imageURL = [NSURL URLWithString:self.tweet.mediaLink];
+//    [self.mediaView setImageWithURL:imageURL];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

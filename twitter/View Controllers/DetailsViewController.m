@@ -114,7 +114,6 @@
             }
         }];
     }
-    
     self.retweetNumber.text = [NSString stringWithFormat:@"%d Retweets", self.tweet.retweetCount];
 }
 
@@ -125,8 +124,6 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    TimelineViewController *timelineViewController = [segue destinationViewController];
-    timelineViewController.indexPath = self.indexPath;
     
 }
 

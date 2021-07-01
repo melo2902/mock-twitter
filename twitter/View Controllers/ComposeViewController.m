@@ -20,35 +20,37 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
-    NSString *URLString = self.user.profilePicture;
+    NSString *URLString = self.userPP;
+    NSLog(@"@user%@", self.user);
+//    NSLog(@"userProfilePicture%@", self.user.profilePicture);
     NSURL *url = [NSURL URLWithString:URLString];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
+
+    UIImage *originalImage = [UIImage imageWithData:urlData];
+    self.profileView.image = originalImage;
+    self.profileView.layer.cornerRadius = self.profileView.frame.size.width / 2;
+    self.profileView.clipsToBounds = true;
     
-    self.profileView.image = [UIImage imageWithData:urlData];
-    //
-    //    UITextView *textView = [[UITextView alloc] init];
-    //    self.textView.placeholder = @"What are your thoughts?";
-    //    self.textView.delegate = self;
-    //    self.textView = RSKPlaceholderTextView(frame: CGRect(x: 0, y: 20, width: self.view.frame.width, height: 100))
-    //    self.textView.placeholder = "What are your thoughts?"
-    
-    //    self.view.addSubview(self.textView)
-    
-    //    textView.placeholderColor = [UIColor lightGrayColor]; // optional
+    self.textView.placeholder = @"What are your thoughts?";
+    self.textView.placeholderColor = [UIColor lightGrayColor];
 }
+
 - (IBAction)closeCompose:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];
 }
 
 - (IBAction)didTapPost:(id)sender {
     NSString *tweetText = self.textView.text;
+    
     [[APIManager shared]postStatusWithText:tweetText completion:^(Tweet *tweet, NSError *error) {
         if(error){
             NSLog(@"Error composing Tweet: %@", error.localizedDescription);
         }
         else{
             [self.delegate didTweet:tweet];
+            
             NSLog(@"Compose Tweet Success!");
             [self dismissViewControllerAnimated:true completion:nil];
         }
