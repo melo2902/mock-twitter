@@ -6,7 +6,10 @@
 //  Copyright © 2021 Emerson Malca. All rights reserved.
 //
 
+#import "APIManager.h"
 #import "DetailsViewController.h"
+#import "Tweet.h"
+#import "TimelineViewController.h"
 
 @interface DetailsViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *profileView;
@@ -17,10 +20,14 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *retweetNumber;
 @property (weak, nonatomic) IBOutlet UILabel *likeNumber;
+@property (weak, nonatomic) IBOutlet UIButton *retweetButton;
+@property (weak, nonatomic) IBOutlet UIButton *likeButton;
+@property (weak, nonatomic) IBOutlet UIButton *replyButton;
 @end
 
 @implementation DetailsViewController
 
+//Need to set it at the beginning
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -40,17 +47,102 @@
     self.profileView.layer.cornerRadius = self.profileView.frame.size.width / 2;
     self.profileView.clipsToBounds = true;
     
-    // Do any additional setup after loading the view.
+    [self.likeButton setSelected:self.tweet.favorited];
+    [self.retweetButton setSelected:self.tweet.retweeted];
 }
 
-/*
+- (IBAction)onTapFavorite:(id)sender {
+    if (!self.tweet.favorited) {
+        self.tweet.favorited = YES;
+        self.tweet.favoriteCount += 1;
+        self.likeButton.selected = YES;
+        
+    //    have to check post request... need to change the url
+        // TODO: Send a POST request to the POST favorites/create endpoint
+        [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
+//                unset if fails
+//                Set an alert
+            }
+            else{
+               
+                
+                NSLog(@"Successfully favorited the following Tweet: %@", self.tweet.text);
+            }
+        }];
+    } else {
+        self.tweet.favorited = NO;
+        self.tweet.favoriteCount -= 1;
+        self.likeButton.selected = NO;
+
+
+    //    have to check post request... need to change the url
+        // TODO: Send a POST request to the POST favorites/create endpoint
+        [[APIManager shared] unfavorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error unfavorting tweet: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully unfavorting the following Tweet: %@", self.tweet.text);
+            }
+        }];
+    }
+    
+    NSString* likeCount = [NSString stringWithFormat:@"%d", self.tweet.favoriteCount];
+    [self.likeButton setTitle:likeCount forState:UIControlStateNormal];
+}
+
+- (IBAction)onTapRetweet:(id)sender {
+    if (!self.tweet.retweeted) {
+        self.tweet.retweeted = YES;
+        self.tweet.retweetCount += 1;
+        self.retweetButton.selected = YES;
+        
+    //    have to check post request... need to change the url
+        // TODO: Send a POST request to the POST favorites/create endpoint
+        [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error tweeting tweet: %@", error.localizedDescription);
+//                unset if fails
+//                Set an alert
+            }
+            else{
+               
+                NSLog(@"Successfully tweeted the following Tweet: %@", self.tweet.text);
+            }
+        }];
+    } else {
+        self.tweet.retweeted = NO;
+        self.tweet.retweetCount -= 1;
+        self.retweetButton.selected = NO;
+
+    //    have to check post request... need to change the url
+        // TODO: Send a POST request to the POST favorites/create endpoint
+        [[APIManager shared] untweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error untweeting tweet: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully untweeting the following Tweet: %@", self.tweet.text);
+            }
+        }];
+    }
+    
+    NSString* retweetCount = [NSString stringWithFormat:@"%d", self.tweet.retweetCount];
+    [self.retweetButton setTitle:retweetCount forState:UIControlStateNormal];
+}
+
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    TimelineViewController *timelineViewController = [segue destinationViewController];
+    timelineViewController.indexPath = self.indexPath;
+    
 }
-*/
 
 @end

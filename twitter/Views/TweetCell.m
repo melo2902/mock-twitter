@@ -16,16 +16,9 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    
-    BOOL flag = self.tweet.favorited;
-    NSLog(flag ? @"Yes" : @"No");
-    
-//    NSLog(@"%@", self.tweet.favorited);
-    if (self.tweet.favorited) {
-        [self.likeNumber setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected];
-    } {
-        [self.likeNumber setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateSelected];
-    }
+
+    [self.likeNumber setSelected:self.tweet.favorited];
+    [self.retweetNumber setSelected:self.tweet.retweeted];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -35,16 +28,10 @@
 }
 
 - (IBAction)didTapeFavorite:(id)sender {
-//    BOOL currentState = self.tweet.favorited;
-    BOOL flag = self.tweet.favorited;
-    NSLog(flag ? @"HereYes" : @"HereNo");
-    
     if (!self.tweet.favorited) {
         self.tweet.favorited = YES;
         self.tweet.favoriteCount += 1;
         self.likeNumber.selected = YES;
-
-        [sender setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected];
 
     //    have to check post request... need to change the url
         // TODO: Send a POST request to the POST favorites/create endpoint
@@ -60,8 +47,6 @@
         self.tweet.favorited = NO;
         self.tweet.favoriteCount -= 1;
         self.likeNumber.selected = NO;
-
-        [sender setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateNormal];
 
     //    have to check post request... need to change the url
         // TODO: Send a POST request to the POST favorites/create endpoint
@@ -81,23 +66,40 @@
 }
 
 - (IBAction)didTapRetweet:(id)sender {
-    self.tweet.retweeted = YES;
-    self.tweet.retweetCount += 1;
-    self.replyNumber.selected = YES;
-    
-    [sender setImage:[UIImage imageNamed:@"retweet-icon-green.png"] forState:UIControlStateSelected];
+    if (!self.tweet.retweeted) {
+        self.tweet.retweeted = YES;
+        self.tweet.retweetCount += 1;
+        self.retweetNumber.selected = YES;
+
+    //    have to check post request... need to change the url
+        // TODO: Send a POST request to the POST favorites/create endpoint
+        [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error tweeting tweet: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully tweeted the following Tweet: %@", self.tweet.text);
+            }
+        }];
+    } else {
+        self.tweet.retweeted = NO;
+        self.tweet.retweetCount -= 1;
+        self.retweetNumber.selected = NO;
+
+    //    have to check post request... need to change the url
+        // TODO: Send a POST request to the POST favorites/create endpoint
+        [[APIManager shared] untweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error untweeting tweet: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully untweeting the following Tweet: %@", self.tweet.text);
+            }
+        }];
+    }
     
     NSString* retweetCount = [NSString stringWithFormat:@"%d", self.tweet.retweetCount];
     [self.retweetNumber setTitle:retweetCount forState:UIControlStateNormal];
-    
-    [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
-        if(error){
-             NSLog(@"Error retweeting cell tweet: %@", error.localizedDescription);
-        }
-        else{
-            NSLog(@"Successfully retweeted the following Tweet: %@", self.tweet.text);
-        }
-    }];
 }
 
 @end

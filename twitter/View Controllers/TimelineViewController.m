@@ -21,11 +21,17 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+
 @end
 
 @implementation TimelineViewController
 BOOL isMoreDataLoading;
 InfiniteScrollActivityView *loadingMoreView;
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+//    [self reloadRowsAtIndexPaths];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,14 +46,14 @@ InfiniteScrollActivityView *loadingMoreView;
     [self.tableView insertSubview:self.refreshControl atIndex:0];
     
     // Set up Infinite Scroll loading indicator
-    CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
-    loadingMoreView = [[InfiniteScrollActivityView alloc] initWithFrame:frame];
-    loadingMoreView.hidden = true;
-    [self.tableView addSubview:loadingMoreView];
-    
-    UIEdgeInsets insets = self.tableView.contentInset;
-    insets.bottom += InfiniteScrollActivityView.defaultHeight;
-    self.tableView.contentInset = insets;
+//    CGRect frame = CGRectMake(0, self.tableView.contentSize.height, self.tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight);
+//    loadingMoreView = [[InfiniteScrollActivityView alloc] initWithFrame:frame];
+//    loadingMoreView.hidden = true;
+//    [self.tableView addSubview:loadingMoreView];
+//
+//    UIEdgeInsets insets = self.tableView.contentInset;
+//    insets.bottom += InfiniteScrollActivityView.defaultHeight;
+//    self.tableView.contentInset = insets;
 }
 
 - (void)getTimeline {
@@ -55,10 +61,6 @@ InfiniteScrollActivityView *loadingMoreView;
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
         if (tweets) {
             NSLog(@"😎😎😎 Successfully loaded home timeline");
-//            for (NSDictionary *dictionary in tweets) {
-//                NSString *text = dictionary[@"text"];
-//                NSLog(@"%@", text);
-//            }
             
             self.arrayOfTweets = (NSMutableArray*)tweets;
             [self.tableView reloadData];
@@ -119,6 +121,8 @@ InfiniteScrollActivityView *loadingMoreView;
     NSString *replyCountNumber = [NSString stringWithFormat:@"%d", tweet.replyCount];
     [cell.replyNumber setTitle:replyCountNumber forState:UIControlStateNormal];
     
+//    [cell.likeNumber setSelected:cell.tweet.favorited];
+    
     return cell;
 }
 
@@ -126,6 +130,16 @@ InfiniteScrollActivityView *loadingMoreView;
     [self.arrayOfTweets addObject:tweet];
     [self.tableView reloadData];
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Do some stuff when the row is selected
+ [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation {
+
+}
+//reloadRows
 
 //-(void)loadMoreData{
 //
@@ -203,6 +217,7 @@ InfiniteScrollActivityView *loadingMoreView;
         
         DetailsViewController *detailsViewController = [segue destinationViewController];
         detailsViewController.tweet = tweet;
+        detailsViewController.indexPath = indexPath;
     }
 }
 
